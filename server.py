@@ -2,14 +2,12 @@ import datetime
 import os
 import json
 import re
-import psycopg2 as dbapi2
-import database
+import forms
 
+from database import initdb
+from forms import AddCompanyForm
 from flask import Flask
 from flask import render_template
-from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "verysecretkeyofthewebsite"
@@ -29,9 +27,17 @@ def home_page():
 @app.route('/adminpage')
 def admin_page():
 	 return render_template('adminpage.html')
-@app.route('/addcompany')
+@app.route('/addcompany', methods=['GET', 'POST'])
 def add_company():
-    form = NameForm()
+    form = AddCompanyForm()
+    if form.validate_on_submit():
+        company_name = form.company_name.data
+        number_of_employees = form.number_of_employees.data
+        form.number_of_employees.data = ''
+        form.company_name.data = ''
+        print(company_name)
+        print(number_of_employees)
+        return render_template('addcompany.html', form=form)
     return render_template('addcompany.html', form=form)
 
 if __name__ == '__main__':
