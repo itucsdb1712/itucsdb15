@@ -3,5 +3,10 @@
 {% endblock %}
 {% block body %}
 <h2>Add Company</h2>
-
+<form method="POST">
+    {{ form.csrf_token }}
+    {{ form.company_name.label}} {{form.company_name()}} </br>
+    {{ form.number_of_employees.label}} {{form.number_of_employees()}} </br>
+    {{ form.submit() }}
+</form>
 {% endblock %}
