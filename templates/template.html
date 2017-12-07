@@ -7,27 +7,37 @@
     <link href="../static/style.css" rel="stylesheet" type="text/css">
   </head>
   <body class="body">
-  <div class="topmenu">
-  	<div class="topmenu-top">
-  		<ul>
-  			<li>Anasayfa</li>
-  			<li>Projeler</li>
-  			<li>Yardım</li>
-  		</ul>
-  	</div>
-  	<div class="topmenu-middle">
-<div class="searchbar">
-  	  <input type="text" placeholder="Ara..."></div>
-  	<h1>ProjectEasy</h1>
-</div>
-  	<div class="topmenu-bottom">
-  		<ul>
-  			{% block topmenulist %}
-  			{% endblock %}
-  		</ul>
-  	</div>
-  </div>
-  {% block body %}
-  {% endblock %}
+      <div class="topmenu">
+          <div class="topmenu-top">
+              <ul>
+                  <li>Anasayfa</li>
+                  <li>Projeler</li>
+                  <li>Yardım</li>
+              </ul>
+          </div>
+          <div class="topmenu-middle">
+              <div class="searchbar">
+                  <input type="text" placeholder="Ara...">
+              </div>
+              <h1>ProjectEasy</h1>
+          </div>
+          <div class="topmenu-bottom">
+              <ul>
+                  {% block topmenulist %}
+                  {% endblock %}
+              </ul>
+          </div>
+      </div>
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <ul style="margin: 0; padding: 0; background-color: darkkhaki; font-weight: bold; ">
+          {% for message in messages %}
+          <li>{{ message }}</li>
+          {% endfor %}
+      </ul>
+      {% endif %}
+      {% endwith %}
+      {% block body %}
+      {% endblock %}
   </body>
 </html>

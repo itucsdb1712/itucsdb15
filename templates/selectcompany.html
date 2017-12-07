@@ -1,15 +1,15 @@
-{% extends "template.html" %}
+﻿{% extends "template.html" %}
 {% block topmenulist %}
 <li><a href="/addcompany">Add Company</a></li>
 <li><a href="/listcompanies">List Companies</a></li>
 <li><a href="/selectcompany">Alter a Company</a></li>
 {% endblock %}
 {% block body %}
-<h2>Add Company</h2>
+<h2>Alter Company</h2>
 <form method="POST">
     {{ form.csrf_token }}
-    {{ form.company_name.label}} {{form.company_name()}} </br>
-    {{ form.number_of_employees.label}} {{form.number_of_employees()}} </br>
-    {{ form.submit() }}
+    {{ form.company_name.label}} {{form.company_name()}}
+    {{ form.submitUpdate() }}
+    {{ form.submitDelete() }}
 </form>
 {% endblock %}
