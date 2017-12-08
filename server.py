@@ -39,7 +39,7 @@ def add_company():
 @app.route('/listcompanies', methods=['GET'])
 def list_companies():
     information = listCompanies()
-    return render_template('listCompanies.html', informations = information)
+    return render_template('listcompanies.html', informations = information)
 @app.route('/selectcompany', methods=['GET', 'POST'])
 def select_company():
     form = SelectCompanyForm()
