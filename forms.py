@@ -5,10 +5,16 @@ from wtforms.validators import DataRequired, NumberRange
 
 class AddCompanyForm(FlaskForm):
     company_name = StringField('Company Name: ', validators=[DataRequired()])
-    number_of_employees = IntegerField('Number of employees: ', validators=[DataRequired()])
+    number_of_employees = IntegerField('Number of employees: ', 
+                                       validators=[DataRequired()])
     submit = SubmitField('Submit')
 
 class SelectCompanyForm(FlaskForm):
     company_name = StringField('Company Name: ', validators=[DataRequired()])
     submitUpdate = SubmitField('Update')
     submitDelete = SubmitField('Delete')
+    
+class LoginForm(FlaskForm):
+    username = StringField('Username: ', validators=[DataRequired()])
+    password = StringField('Password: ', validators=[DataRequired()])
+    submit = SubmitField('Submit')

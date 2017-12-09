@@ -14,6 +14,11 @@ def initdb(dsn):
                     name VARCHAR(20),
                     number_of_employees INTEGER)"""
         cursor.execute(statement)
+        statement = """CREATE TABLE IF NOT EXISTS users (
+                    id SERIAL,
+                    username VARCHAR(20),
+                    password VARCHAR(100))"""
+        cursor.execute(statement)
         connection.commit()
     except:
         print("Failed to create cursor.")
@@ -93,5 +98,19 @@ def deleteCompany(company_id):
         if cursor is not None:
             cursor.close()
 
+def getUserPwHash(username):
+    try:
+        cursor = connection.cursor()
+        statement = """SELECT password FROM users
+                    WHERE username = %s"""
+        cursor.execute(statement, [username])
+        hash = cursor.fetchall()
+        return hash
+    except:
+        print("Failed to create cursor or wrong SQL Statement")
+        cursor = None
+    finally:
+        if cursor is not None:
+            cursor.close()
 
 

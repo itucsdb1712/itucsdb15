@@ -4,8 +4,8 @@ import json
 import re
 
 from database import *
-from forms import AddCompanyForm, SelectCompanyForm
-from flask import Flask, flash, redirect, url_for
+from forms import *
+from flask import Flask, flash, redirect, url_for, session
 from flask import render_template
 
 app = Flask(__name__)
@@ -20,12 +20,32 @@ def get_elephantsql_dsn(vcap_services):
              dbname='{}'""".format(user, password, host, port, dbname)
     return dsn
 @app.route
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home_page():
-    return render_template('home.html')
+    global logged_user_global
+    logged_user_global = None
+    session['logged_in'] = False
+    form = LoginForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        hash = getUserPwHash(username)
+        if hash[0][0] == password:
+            session['logged_in'] = True
+            flash('You have logged in successfully.')
+            logged_user_global = username
+        else:
+            flash('You have entered wrong username or password.')
+            logged_user_global = None
+    return render_template('home.html', form = form, username = logged_user_global)
 @app.route('/adminpage')
 def admin_page():
-	 return render_template('adminpage.html')
+    if not session.get('logged_in'):
+        flash("You have no authority!")
+        return redirect(url_for('home_page'))
+    else:
+        return render_template('adminpage.html')
+        
 @app.route('/addcompany', methods=['GET', 'POST'])
 def add_company():
     form = AddCompanyForm()
@@ -75,6 +95,14 @@ def delete_company():
     deleteCompany(company_id)
     flash('Company deleted successfully.')
     return render_template('adminpage.html')
+
+@app.route('/logout')
+def logout():
+    session['logged_in'] = False
+    logged_user_global = None
+    flash('You have been logged out successfully.')
+    return redirect(url_for('home_page'))
+    
 
 if __name__ == '__main__':
     VCAP_APP_PORT = os.getenv('VCAP_APP_PORT')

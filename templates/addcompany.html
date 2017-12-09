@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 {% extends "template.html" %}
 {% block topmenulist %}
 <li><a href="/addcompany">Add Company</a></li>
@@ -8,8 +9,8 @@
 <h2>Add Company</h2>
 <form method="POST">
     {{ form.csrf_token }}
-    {{ form.company_name.label}} {{form.company_name()}} </br>
-    {{ form.number_of_employees.label}} {{form.number_of_employees()}} </br>
+    {{ form.company_name.label}} {{form.company_name()}} <br/>
+    {{ form.number_of_employees.label}} {{form.number_of_employees()}} <br/>
     {{ form.submit() }}
 </form>
 {% endblock %}

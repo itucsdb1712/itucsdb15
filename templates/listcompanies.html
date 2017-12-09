@@ -1,4 +1,5 @@
-﻿{% extends "template.html" %}
+﻿<!DOCTYPE html>
+{% extends "template.html" %}
 {% block topmenulist %}
 <li><a href="/addcompany">Add Company</a></li>
 <li><a href="/listcompanies">List Companies</a></li>
@@ -10,8 +11,12 @@
     <tr><th>Name</th><th>Number of Employees</th></tr>
     {% if informations %}
     {% for information in informations %}
-    <tr><td align="center">{{ information[0] }}</td><td align="center">{{ information[1] }}</td></tr>
-    {% endfor %}
+    <tr>
+        <td align="center">{{ information[0] }}</td>
+        <td align="center">{{ information[1] }}</td>
+    </tr>
+     {% endfor %}
     {% endif %}
 </table>
 {% endblock %}
+
