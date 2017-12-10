@@ -1,17 +1,19 @@
-<!DOCTYPE html>
 {% extends "template.html" %}
+{% block user %}
+{% if username %}
+<li style="float: right"><a href="/logout">Logout</a></li>
+<li style="float: right">{{ username }}</li>
+{% endif %}
+{% endblock %}
 {% block topmenulist %}
-<li><a href="/addcompany">Add Company</a></li>
-<li><a href="/listcompanies">List Companies</a></li>
-<li><a href="/selectcompany">Alter a Company</a></li>
+    <li><a href="/adminpage">Reach Admin Menu</a></li>
 {% endblock %}
 {% block body %}
-<h2>Add Company</h2>
+<h2>Login:</h2>
 <form method="POST">
     {{ form.csrf_token }}
-    {{ form.company_name.label}} {{form.company_name()}} <br/>
-    {{ form.number_of_employees.label}} {{form.number_of_employees()}} <br/>
-    {{ form.company_account_pw.label}} {{form.company_account_pw()}} <br/>
+    {{ form.username.label}} {{form.username()}} <br/>
+    {{ form.password.label}} {{form.password()}} <br/>
     {{ form.submit() }}
 </form>
 {% endblock %}
