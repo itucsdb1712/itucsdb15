@@ -5,10 +5,12 @@ import re
 
 from database import *
 from forms import *
-from flask import Flask, flash, redirect, url_for, session
+from flask import Flask, flash, redirect, url_for, session, Blueprint
 from flask import render_template
+from company_view import *
 
 app = Flask(__name__)
+app.register_blueprint(company_app)
 app.config['SECRET_KEY'] = "verysecretkeyofthewebsite"
 
 def get_elephantsql_dsn(vcap_services):
@@ -19,7 +21,6 @@ def get_elephantsql_dsn(vcap_services):
     dsn = """user='{}' password='{}' host='{}' port={} 
              dbname='{}'""".format(user, password, host, port, dbname)
     return dsn
-@app.route
 @app.route('/', methods=['GET', 'POST'])
 def home_page():
     global logged_user_global
@@ -46,55 +47,7 @@ def admin_page():
     else:
         return render_template('adminpage.html')
         
-@app.route('/addcompany', methods=['GET', 'POST'])
-def add_company():
-    form = AddCompanyForm()
-    if form.validate_on_submit(): 
-        company_name = form.company_name.data
-        number_of_employees = form.number_of_employees.data
-        addCompanyToDb(company_name, number_of_employees)
-        flash('Company added successfully.')
-        return render_template('adminpage.html', form=form)
-    return render_template('addcompany.html', form=form)
-@app.route('/listcompanies', methods=['GET'])
-def list_companies():
-    information = listCompanies()
-    return render_template('listcompanies.html', informations = information)
-@app.route('/selectcompany', methods=['GET', 'POST'])
-def select_company():
-    form = SelectCompanyForm()
-    if form.validate_on_submit():
-        global company_name_global
-        company_name_global = form.company_name.data
-        if form.submitUpdate.data is True:
-            return redirect(url_for('update_company'))
-        if form.submitDelete.data is True:
-            return redirect(url_for('delete_company'))
-        return render_template('selectcompany.html', form = form)
-    return render_template('selectcompany.html', form = form)
-@app.route('/updatecompany', methods=['GET', 'POST'])
-def update_company():
-    information = returnCompany(company_name_global)
-    form = AddCompanyForm(company_name=information[0][1], number_of_employees=information[0][2])
-    company_id = information[0][0]
-    if form.submit.data is True:
-        if form.validate_on_submit():
-            name = form.company_name.data
-            number_of_employees = form.number_of_employees.data
-            print(name)
-            print(number_of_employees)
-            updateCompany(company_id, name, number_of_employees)
-            flash('Company updated successfully.')
-            return render_template('adminpage.html')
-    return render_template('updatecompany.html', form = form)
 
-@app.route('/deletecompany', methods=['GET', 'POST'])
-def delete_company():
-    information = returnCompany(company_name_global)
-    company_id = information[0][0]
-    deleteCompany(company_id)
-    flash('Company deleted successfully.')
-    return render_template('adminpage.html')
 
 @app.route('/logout')
 def logout():
