@@ -19,5 +19,6 @@ def add_task():
 
 @task_app.route('/listTask', methods=['GET', 'POST'])
 def list_task():
-    tasks = [['sdfs', '3'], ['asda', '6']]
+    #tasks = [['sdfs', '3'], ['asda', '6']]
+    tasks = getTasksFromDb() #returns a table
     return render_template('list_task.html', tasks = tasks)

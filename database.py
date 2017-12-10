@@ -126,3 +126,17 @@ def addTaskToDb(name, priority):
     finally:
         if cursor is not None:
             cursor.close()
+
+def getTasksFromDb():
+    try:
+        cursor = connection.cursor()
+        statement = """SELECT * FROM task"""
+        cursor.execute(statement)
+        tasks = cursor.fetchall()
+        return tasks
+    except:
+        print("Failed to create cursor or wrong SQL Statement")
+        cursor = None
+    finally:
+        if cursor is not None:
+            cursor.close()
