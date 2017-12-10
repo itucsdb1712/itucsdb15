@@ -7,6 +7,7 @@ class AddCompanyForm(FlaskForm):
     company_name = StringField('Company Name: ', validators=[DataRequired()])
     number_of_employees = IntegerField('Number of employees: ', 
                                        validators=[DataRequired()])
+    company_account_pw = StringField('Password: ', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
 class SelectCompanyForm(FlaskForm):
