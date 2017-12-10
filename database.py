@@ -114,3 +114,15 @@ def getUserPwHash(username):
             cursor.close()
 
 
+def addTaskToDb(name, priority):
+    try:
+        cursor = connection.cursor()
+        statement = """INSERT INTO task VALUES ( %s, %s );"""
+        cursor.execute(statement, [name, priority])
+        connection.commit()
+    except:
+        print("Failed to create cursor or wrong SQL Statement")
+        cursor = None
+    finally:
+        if cursor is not None:
+            cursor.close()

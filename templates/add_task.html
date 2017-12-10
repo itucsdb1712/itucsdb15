@@ -1,0 +1,15 @@
+{% extends "template.html" %}
+{% block topmenulist %}
+{% endblock %}
+{% block body %}
+
+    <h2>Add Task</h2>
+
+    <form method="POST">
+    {{ form.csrf_token }}
+    {{ form.name.label }} {{ form.name() }}
+    {{ form.priority.label }} {{ form.priority(placeholder='') }}
+    {{ form.submit() }}
+    </form>
+
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "template.html" %}
+{% block topmenulist %}
+<li><a href="/addcompany">Add Company</a></li>
+<li><a href="/listcompanies">List Companies</a></li>
+<li><a href="/selectcompany">Alter a Company</a></li>
+{% endblock %}
+{% block body %}
+<h2>TASKS</h2>
+<table style="margin:0; padding:0">
+    <tr><th>Name</th><th>Priority</th></tr>
+    {% if tasks %}
+    {% for task in tasks %}
+    <tr>
+        <td align="center">{{ task[0] }}</td>
+        <td align="center">{{ task[1] }}</td>
+    </tr>
+     {% endfor %}
+    {% endif %}
+</table>
+{% endblock %}

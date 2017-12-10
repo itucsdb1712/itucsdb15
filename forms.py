@@ -19,3 +19,8 @@ class LoginForm(FlaskForm):
     username = StringField('Username: ', validators=[DataRequired()])
     password = StringField('Password: ', validators=[DataRequired()])
     submit = SubmitField('Submit')
+
+class TaskForm(FlaskForm):
+    name = StringField('Task name', validators=[DataRequired()])
+    priority = IntegerField('priority[1,2,3] ', validators=[DataRequired()])
+    submit = SubmitField('Submit')

@@ -8,9 +8,11 @@ from forms import *
 from flask import Flask, flash, redirect, url_for, session, Blueprint
 from flask import render_template
 from company_view import *
+from task_view import *
 
 app = Flask(__name__)
 app.register_blueprint(company_app)
+app.register_blueprint(task_app)
 app.config['SECRET_KEY'] = "verysecretkeyofthewebsite"
 
 def get_elephantsql_dsn(vcap_services):
