@@ -23,8 +23,9 @@ def get_elephantsql_dsn(vcap_services):
     dsn = """user='{}' password='{}' host='{}' port={} 
              dbname='{}'""".format(user, password, host, port, dbname)
     return dsn
+
 @app.route('/', methods=['GET', 'POST'])
-def home_page():
+def login_page():
     global logged_user_global
     logged_user_global = None
     session['logged_in'] = False
@@ -37,26 +38,29 @@ def home_page():
             session['logged_in'] = True
             flash('You have logged in successfully.')
             logged_user_global = username
+            return redirect(url_for('home_page'))
         else:
             flash('You have entered wrong username or password.')
             logged_user_global = None
-    return render_template('home.html', form = form, username = logged_user_global)
+    return render_template('login.html', form = form, username = logged_user_global)
+
+@app.route('/home')
+def home_page():
+    return render_template('home.html')
 @app.route('/adminpage')
 def admin_page():
     if not session.get('logged_in'):
         flash("You have no authority!")
-        return redirect(url_for('home_page'))
+        return redirect(url_for('login_page'))
     else:
         return render_template('adminpage.html')
         
-
-
 @app.route('/logout')
 def logout():
     session['logged_in'] = False
     logged_user_global = None
     flash('You have been logged out successfully.')
-    return redirect(url_for('home_page'))
+    return redirect(url_for('login_page'))
     
 
 if __name__ == '__main__':
