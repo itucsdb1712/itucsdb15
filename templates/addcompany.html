@@ -11,6 +11,7 @@
     {{ form.csrf_token }}
     {{ form.company_name.label}} {{form.company_name()}} <br/>
     {{ form.number_of_employees.label}} {{form.number_of_employees()}} <br/>
+    {{ form.company_account_pw.label}} {{form.company_account_pw()}} <br/>
     {{ form.submit() }}
 </form>
 {% endblock %}
