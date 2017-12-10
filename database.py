@@ -1,4 +1,5 @@
 import psycopg2 as dbapi2
+from _sqlite3 import Statement
 
 def initdb(dsn):
     try:
@@ -12,16 +13,47 @@ def initdb(dsn):
         statement = """CREATE TABLE IF NOT EXISTS company (
                     id SERIAL,
                     name VARCHAR(20),
-                    number_of_employees INTEGER)"""
+                    number_of_employees INTEGER,
+                    PRIMARY KEY (id))"""
         cursor.execute(statement)
-        statement = """CREATE TABLE IF NOT EXISTS users (
+        print("After Company")
+        statement = """CREATE TABLE IF NOT EXISTS user_role (
+                    id SERIAL,
+                    role VARCHAR(10),
+                    PRIMARY KEY(id))"""
+        cursor.execute(statement)
+        connection.commit()
+        print("After user_role")
+        statement = """CREATE TABLE IF NOT EXISTS system_user (
                     id SERIAL,
                     username VARCHAR(20),
-                    password VARCHAR(100))"""
+                    password VARCHAR(100),
+                    user_type INTEGER REFERENCES user_role,
+                    PRIMARY KEY (id))"""
         cursor.execute(statement)
+        print("After last")
         connection.commit()
     except:
         print("Failed to create cursor.")
+        cursor = None
+    finally:
+        if cursor is not None:
+            cursor.close()
+    
+    try:
+        cursor = connection.cursor()
+        statement = """INSERT INTO user_role (id, role)
+                    VALUES (1, 'admin')"""
+        cursor.execute(statement)
+        statement = """INSERT INTO user_role (id, role)
+                    VALUES (2, 'company')"""
+        cursor.execute(statement)
+        statement = """INSERT INTO user_role (id, role)
+                    VALUES (3, 'employee')"""
+        cursor.execute(statement)
+        connection.commit()
+    except:
+        print("User Roles already exists. Skip this stage")
         cursor = None
     finally:
         if cursor is not None:
@@ -101,7 +133,7 @@ def deleteCompany(company_id):
 def getUserPwHash(username):
     try:
         cursor = connection.cursor()
-        statement = """SELECT password FROM users
+        statement = """SELECT password FROM system_user
                     WHERE username = %s"""
         cursor.execute(statement, [username])
         hash = cursor.fetchall()
