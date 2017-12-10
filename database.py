@@ -14,6 +14,12 @@ def initdb(dsn):
                     name VARCHAR(20),
                     number_of_employees INTEGER)"""
         cursor.execute(statement)
+        cursor = connection.cursor()
+        statement = """CREATE TABLE IF NOT EXISTS task (
+                            id SERIAL PRIMARY KEY,
+                            name VARCHAR(20),
+                            priority INTEGER)"""
+        cursor.execute(statement)
         statement = """CREATE TABLE IF NOT EXISTS users (
                     id SERIAL,
                     username VARCHAR(20),
@@ -64,7 +70,7 @@ def returnCompany(company_name):
         information = cursor.fetchall()
         return information
     except:
-        print("Failed to create cursor or wrong SQL Statement")
+        print("returnCompany: Failed to create cursor or wrong SQL Statement")
         cursor = None
     finally:
         if cursor is not None:
@@ -78,7 +84,7 @@ def updateCompany(company_id, name, number_of_employees):
         cursor.execute(statement, [name, number_of_employees, company_id])
         connection.commit()
     except:
-        print("Failed to create cursor or wrong SQL Statement")
+        print("updateCompany: Failed to create cursor or wrong SQL Statement")
         cursor = None
     finally:
         if cursor is not None:
@@ -92,7 +98,7 @@ def deleteCompany(company_id):
         cursor.execute(statement, [company_id])
         connection.commit()
     except:
-        print("Failed to create cursor or wrong SQL Statement")
+        print("deleteCompany: Failed to create cursor or wrong SQL Statement")
         cursor = None
     finally:
         if cursor is not None:
@@ -107,7 +113,7 @@ def getUserPwHash(username):
         hash = cursor.fetchall()
         return hash
     except:
-        print("Failed to create cursor or wrong SQL Statement")
+        print("getUserPwHash: Failed to create cursor or wrong SQL Statement")
         cursor = None
     finally:
         if cursor is not None:
@@ -117,11 +123,11 @@ def getUserPwHash(username):
 def addTaskToDb(name, priority):
     try:
         cursor = connection.cursor()
-        statement = """INSERT INTO task VALUES ( %s, %s );"""
+        statement = """INSERT INTO task (name, priority) VALUES ( %s, %s );"""
         cursor.execute(statement, [name, priority])
         connection.commit()
     except:
-        print("Failed to create cursor or wrong SQL Statement")
+        print("addTaskToDb: Failed to create cursor or wrong SQL Statement")
         cursor = None
     finally:
         if cursor is not None:
@@ -135,7 +141,23 @@ def getTasksFromDb():
         tasks = cursor.fetchall()
         return tasks
     except:
-        print("Failed to create cursor or wrong SQL Statement")
+        print("getTasksFromDb: Failed to create cursor or wrong SQL Statement")
+        cursor = None
+    finally:
+        if cursor is not None:
+            cursor.close()
+
+def deleteTaskFromDb(id):
+    try:
+        cursor = connection.cursor()
+        statement = """DELETE FROM task
+                    WHERE (id = %s)"""
+        print('inside delete from db ' + id)
+        cursor.execute(statement, [id])
+
+        connection.commit()
+    except:
+        print("deleteTaskFromDb: Failed to create cursor or wrong SQL Statement")
         cursor = None
     finally:
         if cursor is not None:

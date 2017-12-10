@@ -22,3 +22,9 @@ def list_task():
     #tasks = [['sdfs', '3'], ['asda', '6']]
     tasks = getTasksFromDb() #returns a table
     return render_template('list_task.html', tasks = tasks)
+
+@task_app.route('/deleteTask/<task_id>', methods=['GET', 'POST'])
+def delete_task(task_id):
+    deleteTaskFromDb(task_id)
+    print(task_id)
+    return redirect(url_for('task_app.list_task'))
