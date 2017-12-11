@@ -8,18 +8,23 @@ task_app = Blueprint('task_app', __name__)
 @task_app.route('/addTask', methods=['GET', 'POST'])
 def add_task():
     form = TaskForm(request.form)
+    form.projects.choices = [('1', 'microsoft'), ('2', 'softtech')]
+    print(form.projects.data)
     if form.validate_on_submit():
         name = form.name.data
         priority = form.priority.data
+        project = form.projects.data
         form.name.data = ''
         form.priority.data = ''
-        addTaskToDb(name, priority)
+        form.projects.data = ''
+        addTaskToDb(name, priority, project)
         flash('Task has been created')
     return render_template('add_task.html', form=form)
 
 @task_app.route('/listTask', methods=['GET', 'POST'])
 def list_task():
     form = TaskForm(request.form)
+    form.projects.choices = [('1', 'microsoft'), ('2', 'softtech')]
     tasks = getTasksFromDb() #returns a table
     return render_template('list_task.html', tasks = tasks, form = form)
 
@@ -33,7 +38,9 @@ def update_task(task_id):
     form = TaskForm(request.form)
     name = form.name.data
     priority = form.priority.data
+    project = form.projects.data
     form.name.data = ''
     form.priority.data = ''
-    updateTaskInDb(task_id, name, priority)
+    form.projects.data = ''
+    updateTaskInDb(task_id, name, priority, project)
     return redirect(url_for('task_app.list_task'))

@@ -11,6 +11,10 @@
     {{ form.csrf_token }}
     {{ form.name.label }} {{ form.name() }}
     {{ form.priority.label }} {{ form.priority(placeholder='') }}
+    {{ form.projects.label }} {{ form.projects }}
+         {% for error in form.errors.projects %}
+             <span>{{error}}</span><br>
+         {% endfor %}
     {{ form.submit() }}
     </form>
 

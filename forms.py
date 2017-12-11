@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, IntegerField
+from wtforms import StringField, SubmitField, IntegerField, SelectField
 from wtforms.validators import DataRequired, NumberRange
 
 
@@ -22,5 +22,6 @@ class LoginForm(FlaskForm):
 
 class TaskForm(FlaskForm):
     name = StringField('Task name', validators=[DataRequired()])
-    priority = IntegerField('priority[1,2,3] ', validators=[DataRequired()])
+    priority = IntegerField('priority[1-10]', validators=[DataRequired()])
+    projects = SelectField('project', choices=[], coerce=str)
     submit = SubmitField('Submit')

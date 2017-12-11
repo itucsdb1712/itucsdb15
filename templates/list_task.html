@@ -6,12 +6,13 @@
 {% block body %}
 <h2>TASKS</h2>
 <table style="margin:0; padding:0">
-    <tr><th>Name</th><th>Priority</th></tr>
+    <tr><th>Name</th><th>Priority</th><th>Project</th></tr>
     {% if tasks %}
     {% for task in tasks %}
     <tr>
         <td align="center">{{ task[1] }}</td>
         <td align="center">{{ task[2] }}</td>
+        <td align="center">{{ task[3] }}</td>
         <td><a href="/deleteTask/{{task[0]}}">Delete</a> </td>
         <td><button type="button" onclick="toggleUpdateForm({{ task[0] }})">Update</button></td>
         <td>
@@ -19,6 +20,7 @@
                 {{ form.csrf_token }}
                 {{ form.name.label }} {{ form.name(placeholder=task[1]) }}
                 {{ form.priority.label }} {{ form.priority(placeholder=task[2]) }}
+                {{ form.projects.label }} {{ form.projects() }}
                 {{ form.submit() }}
             </form>
         </td>

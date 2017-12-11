@@ -15,10 +15,18 @@ def initdb(dsn):
                     number_of_employees INTEGER,
                     PRIMARY KEY (id))"""
         cursor.execute(statement)
+
+        statement = """CREATE TABLE IF NOT EXISTS project (
+                            id SERIAL PRIMARY KEY,
+                            name VARCHAR(20),
+                            company INTEGER REFERENCES company)"""
+        cursor.execute(statement)
+
         statement = """CREATE TABLE IF NOT EXISTS task (
                             id SERIAL PRIMARY KEY,
                             name VARCHAR(20),
-                            priority INTEGER)"""
+                            priority INTEGER,
+                            project INTEGER REFERENCES project)"""
         cursor.execute(statement)
         statement = """CREATE TABLE IF NOT EXISTS user_role (
                     id SERIAL,
@@ -184,11 +192,11 @@ def getUserPwHash(username):
 
 
 
-def addTaskToDb(name, priority):
+def addTaskToDb(name, priority, project):
     try:
         cursor = connection.cursor()
-        statement = """INSERT INTO task (name, priority) VALUES ( %s, %s );"""
-        cursor.execute(statement, [name, priority])
+        statement = """INSERT INTO task (name, priority, project) VALUES ( %s, %s, %s );"""
+        cursor.execute(statement, [name, priority, project])
         connection.commit()
     except:
         print("addTaskToDb: Failed to create cursor or wrong SQL Statement")
@@ -226,11 +234,11 @@ def deleteTaskFromDb(id):
             if cursor is not None:
                 cursor.close()
 
-def updateTaskInDb(id, name, priority):
+def updateTaskInDb(id, name, priority, project):
     try:
         cursor = connection.cursor()
-        statement = """UPDATE task SET name=%s, priority=%s WHERE (id = %s)"""
-        cursor.execute(statement, [name, priority, id])
+        statement = """UPDATE task SET name=%s, priority=%s, project=%s WHERE (id = %s)"""
+        cursor.execute(statement, [name, priority, project, id])
         connection.commit()
     except:
         print("updateTaskInDb: Failed to create cursor or wrong SQL Statement")
