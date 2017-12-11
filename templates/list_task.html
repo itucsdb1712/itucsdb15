@@ -13,7 +13,21 @@
         <td align="center">{{ task[1] }}</td>
         <td align="center">{{ task[2] }}</td>
         <td><a href="/deleteTask/{{task[0]}}">Delete</a> </td>
+        <td><a href="<script type='text/javascript'>script code</script>/">Update</a> </td>
+
+        <td><button type="button" onclick="toggle('updateForm');">Update</button></td>
+
     </tr>
+        <tr>
+            <td>
+                <form id="updateForm" method="POST" style="visibility : visible;">
+                    {{ form.csrf_token }}
+                    {{ form.name.label }} {{ form.name(placeholder=task[1]) }}
+                    {{ form.priority.label }} {{ form.priority(placeholder=task[2]) }}
+                    {{ form.submit() }}
+                </form>
+            </td>
+        </tr>
      {% endfor %}
     {% endif %}
 </table>

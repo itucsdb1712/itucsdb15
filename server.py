@@ -34,7 +34,7 @@ def login_page():
         username = form.username.data
         password = form.password.data
         hash = getUserPwHash(username)
-        if hash[0][0] == password:
+        if hash[0] == password:
             session['logged_in'] = True
             flash('You have logged in successfully.')
             logged_user_global = username

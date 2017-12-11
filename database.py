@@ -32,6 +32,7 @@ def initdb(dsn):
                     user_type INTEGER REFERENCES user_role,
                     PRIMARY KEY (id))"""
         cursor.execute(statement)
+
         connection.commit()
     except:
         print("Failed to create cursor.")
@@ -42,18 +43,27 @@ def initdb(dsn):
 
     try:
         cursor = connection.cursor()
+
         statement = """INSERT INTO user_role (id, role)
                     VALUES (1, 'admin')"""
         cursor.execute(statement)
+
         statement = """INSERT INTO user_role (id, role)
                     VALUES (2, 'company')"""
         cursor.execute(statement)
+
         statement = """INSERT INTO user_role (id, role)
                     VALUES (3, 'employee')"""
         cursor.execute(statement)
+
+        statement = """INSERT INTO system_user (username, password, user_type)
+                            VALUES ('admin', 'itucsdb1712', 1)"""
+        cursor.execute(statement)
+
         connection.commit()
     except:
         print("User Roles already exists. Skip this stage")
+        connection.commit()
         cursor = None
     finally:
         if cursor is not None:
@@ -133,10 +143,9 @@ def deleteCompany(company_id):
 def getUserPwHash(username):
     try:
         cursor = connection.cursor()
-        statement = """SELECT password FROM system_user
-                    WHERE username = %s"""
+        statement = """SELECT password FROM system_user WHERE username = %s"""
         cursor.execute(statement, [username])
-        hash = cursor.fetchall()
+        hash = cursor.fetchone()
         return hash
     except:
         print("getUserPwHash: Failed to create cursor or wrong SQL Statement")
@@ -144,6 +153,7 @@ def getUserPwHash(username):
     finally:
         if cursor is not None:
             cursor.close()
+
 
 
 def addTaskToDb(name, priority):
@@ -178,7 +188,6 @@ def deleteTaskFromDb(id):
         cursor = connection.cursor()
         statement = """DELETE FROM task
                     WHERE (id = %s)"""
-        print('inside delete from db ' + id)
         cursor.execute(statement, [id])
 
         connection.commit()
@@ -188,3 +197,4 @@ def deleteTaskFromDb(id):
     finally:
         if cursor is not None:
             cursor.close()
+
