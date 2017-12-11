@@ -170,7 +170,7 @@ def deleteUser(username):
 def getUserPwHash(username):
     try:
         cursor = connection.cursor()
-        statement = """SELECT password FROM system_user WHERE username = %s"""
+        statement = """SELECT password, user_type FROM system_user WHERE username = %s"""
         cursor.execute(statement, [username])
         hash = cursor.fetchone()
         return hash

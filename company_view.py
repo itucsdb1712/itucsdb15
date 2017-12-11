@@ -13,11 +13,11 @@ def add_company():
         company_name = form.company_name.data
         number_of_employees = form.number_of_employees.data
         password = form.company_account_pw.data
-        user_type = 1
+        user_type = 2
         addUserToDb(company_name, password, user_type)
         addCompanyToDb(company_name, number_of_employees)
         flash('Company added successfully.')
-        return render_template('adminpage.html', form=form)
+        return render_template('homepage_admin.html', form=form)
     return render_template('addcompany.html', form=form)
 @company_app.route('/listcompanies', methods=['GET'])
 def list_companies():
@@ -60,4 +60,4 @@ def delete_company():
     deleteCompany(company_id)
     deleteUser(username)
     flash('Company deleted successfully.')
-    return render_template('adminpage.html')
+    return render_template('homepage_admin.html')
