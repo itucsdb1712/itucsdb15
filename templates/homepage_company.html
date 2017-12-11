@@ -1,0 +1,14 @@
+{% extends "template.html" %}
+{% block user %}
+{% if username %}
+<li style="float: right"><a href="/logout">Logout</a></li>
+<li style="float: right">{{ username }}</li>
+{% endif %}
+{% endblock %}
+{% block topmenulist %}
+    <li><a href="/addTask">Add Task</a></li>
+    <li><a href="/listTask">List Task</a></li>
+{% endblock %}
+{% block body %}
+<h2>Company Page</h2>
+{% endblock %}

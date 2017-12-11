@@ -38,7 +38,13 @@ def login_page():
             session['logged_in'] = True
             flash('You have logged in successfully.')
             logged_user_global = username
-            return redirect(url_for('home_page'))
+            print(hash[1])
+            if hash[1] == 1:
+                return render_template('homepage_admin.html', username = logged_user_global)
+            if hash[1] == 2:
+                return render_template('homepage_company.html', username = logged_user_global)
+            if hash[1] == 3:
+                return render_template('homepage_employee.html', username = logged_user_global)
         else:
             flash('You have entered wrong username or password.')
             logged_user_global = None
@@ -47,14 +53,7 @@ def login_page():
 @app.route('/home')
 def home_page():
     return render_template('home.html')
-@app.route('/adminpage')
-def admin_page():
-    if not session.get('logged_in'):
-        flash("You have no authority!")
-        return redirect(url_for('login_page'))
-    else:
-        return render_template('adminpage.html')
-        
+    
 @app.route('/logout')
 def logout():
     session['logged_in'] = False

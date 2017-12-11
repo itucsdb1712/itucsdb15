@@ -84,6 +84,20 @@ def addCompanyToDb(company_name, number_of_employees):
         if cursor is not None:
             cursor.close()
 
+def addUserToDb (username, password, user_type):
+    try:
+        cursor = connection.cursor()
+        statement = """INSERT INTO system_user (username, password, user_type)
+                    VALUES (%s, %s, %s)"""
+        cursor.execute(statement, [username, password, user_type])
+        connection.commit()
+    except:
+        print("Failed to create cursor or wrong SQL Statement")
+        cursor = None
+    finally:
+        if cursor is not None:
+            cursor.close()
+
 def listCompanies():
     try:
         cursor = connection.cursor()
@@ -140,11 +154,24 @@ def deleteCompany(company_id):
     finally:
         if cursor is not None:
             cursor.close()
-
+def deleteUser(username):
+    try:
+        cursor = connection.cursor()
+        statement = """DELETE FROM system_user
+                    WHERE (%s = username)"""
+        cursor.execute(statement, [username])
+        connection.commit()
+    except:
+        print("deleteCompany: Failed to create cursor or wrong SQL Statement")
+        cursor = None
+    finally:
+        if cursor is not None:
+            cursor.close()
+    
 def getUserPwHash(username):
     try:
         cursor = connection.cursor()
-        statement = """SELECT password FROM system_user WHERE username = %s"""
+        statement = """SELECT password, user_type FROM system_user WHERE username = %s"""
         cursor.execute(statement, [username])
         hash = cursor.fetchone()
         return hash
