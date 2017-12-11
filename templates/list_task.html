@@ -13,22 +13,28 @@
         <td align="center">{{ task[1] }}</td>
         <td align="center">{{ task[2] }}</td>
         <td><a href="/deleteTask/{{task[0]}}">Delete</a> </td>
-        <td><a href="<script type='text/javascript'>script code</script>/">Update</a> </td>
-
-        <td><button type="button" onclick="toggle('updateForm');">Update</button></td>
-
+        <td><button type="button" onclick="toggleUpdateForm({{ task[0] }})">Update</button></td>
+        <td>
+            <form id="updateForm{{task[0]}}" method="POST" action="/updateTask/{{task[0]}}" style="display : none;">
+                {{ form.csrf_token }}
+                {{ form.name.label }} {{ form.name(placeholder=task[1]) }}
+                {{ form.priority.label }} {{ form.priority(placeholder=task[2]) }}
+                {{ form.submit() }}
+            </form>
+        </td>
     </tr>
-        <tr>
-            <td>
-                <form id="updateForm" method="POST" style="visibility : visible;">
-                    {{ form.csrf_token }}
-                    {{ form.name.label }} {{ form.name(placeholder=task[1]) }}
-                    {{ form.priority.label }} {{ form.priority(placeholder=task[2]) }}
-                    {{ form.submit() }}
-                </form>
-            </td>
-        </tr>
      {% endfor %}
     {% endif %}
 </table>
+{% endblock %}
+
+{% block script_block %}
+    function toggleUpdateForm(id) {
+    var x = document.getElementById("updateForm"+id);
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
 {% endblock %}

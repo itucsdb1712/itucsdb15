@@ -19,8 +19,8 @@ def add_task():
 
 @task_app.route('/listTask', methods=['GET', 'POST'])
 def list_task():
+    form = TaskForm(request.form)
     tasks = getTasksFromDb() #returns a table
-    form = TaskForm()
     return render_template('list_task.html', tasks = tasks, form = form)
 
 @task_app.route('/deleteTask/<task_id>', methods=['GET', 'POST'])
@@ -30,5 +30,10 @@ def delete_task(task_id):
 
 @task_app.route('/updateTask/<task_id>', methods=['GET', 'POST'])
 def update_task(task_id):
-    #updateTaskInDb(task_id)
+    form = TaskForm(request.form)
+    name = form.name.data
+    priority = form.priority.data
+    form.name.data = ''
+    form.priority.data = ''
+    updateTaskInDb(task_id, name, priority)
     return redirect(url_for('task_app.list_task'))

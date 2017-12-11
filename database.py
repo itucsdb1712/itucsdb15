@@ -36,6 +36,7 @@ def initdb(dsn):
         connection.commit()
     except:
         print("Failed to create cursor.")
+        connection.commit()
         cursor = None
     finally:
         if cursor is not None:
@@ -184,17 +185,30 @@ def getTasksFromDb():
             cursor.close()
 
 def deleteTaskFromDb(id):
+        try:
+            cursor = connection.cursor()
+            statement = """DELETE FROM task
+                        WHERE (id = %s)"""
+            cursor.execute(statement, [id])
+            connection.commit()
+        except:
+            print("deleteTaskFromDb: Failed to create cursor or wrong SQL Statement")
+            connection.commit()
+            cursor = None
+        finally:
+            if cursor is not None:
+                cursor.close()
+
+def updateTaskInDb(id, name, priority):
     try:
         cursor = connection.cursor()
-        statement = """DELETE FROM task
-                    WHERE (id = %s)"""
-        cursor.execute(statement, [id])
-
+        statement = """UPDATE task SET name=%s, priority=%s WHERE (id = %s)"""
+        cursor.execute(statement, [name, priority, id])
         connection.commit()
     except:
-        print("deleteTaskFromDb: Failed to create cursor or wrong SQL Statement")
+        print("updateTaskInDb: Failed to create cursor or wrong SQL Statement")
+        connection.commit()
         cursor = None
     finally:
         if cursor is not None:
             cursor.close()
-
