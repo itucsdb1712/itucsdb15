@@ -34,6 +34,9 @@ def login_page():
         username = form.username.data
         password = form.password.data
         hash = getUserPwHash(username)
+        if hash is None:
+            flash('You have entered wrong username or password.')
+            return render_template('login.html', form = form, username = logged_user_global)
         if hash[0] == password:
             session['logged_in'] = True
             flash('You have logged in successfully.')
