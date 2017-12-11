@@ -83,6 +83,20 @@ def addCompanyToDb(company_name, number_of_employees):
         if cursor is not None:
             cursor.close()
 
+def addUserToDb (username, password, user_type):
+    try:
+        cursor = connection.cursor()
+        statement = """INSERT INTO system_user (username, password, user_type)
+                    VALUES (%s, %s, %s)"""
+        cursor.execute(statement, [username, password, user_type])
+        connection.commit()
+    except:
+        print("Failed to create cursor or wrong SQL Statement")
+        cursor = None
+    finally:
+        if cursor is not None:
+            cursor.close()
+
 def listCompanies():
     try:
         cursor = connection.cursor()

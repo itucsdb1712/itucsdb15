@@ -2,6 +2,7 @@ from flask import Flask, flash, redirect, url_for, session, Blueprint,render_tem
 from forms import *
 from database import *
 from flask import flash
+from pip._vendor.requests.packages.chardet.sbcharsetprober import NUMBER_OF_SEQ_CAT
 
 company_app = Blueprint('company_app', __name__)
 
@@ -11,6 +12,9 @@ def add_company():
     if form.validate_on_submit(): 
         company_name = form.company_name.data
         number_of_employees = form.number_of_employees.data
+        password = form.company_account_pw.data
+        user_type = 1
+        addUserToDb(company_name, password, user_type)
         addCompanyToDb(company_name, number_of_employees)
         flash('Company added successfully.')
         return render_template('adminpage.html', form=form)
