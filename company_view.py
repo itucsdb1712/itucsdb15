@@ -55,6 +55,9 @@ def update_company():
 def delete_company():
     information = returnCompany(company_name_global)
     company_id = information[0][0]
+    username = information[0][1]
+    print(username)
     deleteCompany(company_id)
+    deleteUser(username)
     flash('Company deleted successfully.')
     return render_template('adminpage.html')

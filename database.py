@@ -153,7 +153,20 @@ def deleteCompany(company_id):
     finally:
         if cursor is not None:
             cursor.close()
-
+def deleteUser(username):
+    try:
+        cursor = connection.cursor()
+        statement = """DELETE FROM system_user
+                    WHERE (%s = username)"""
+        cursor.execute(statement, [username])
+        connection.commit()
+    except:
+        print("deleteCompany: Failed to create cursor or wrong SQL Statement")
+        cursor = None
+    finally:
+        if cursor is not None:
+            cursor.close()
+    
 def getUserPwHash(username):
     try:
         cursor = connection.cursor()
