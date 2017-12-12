@@ -1,4 +1,5 @@
 import psycopg2 as dbapi2
+from psycopg2.psycopg1 import connection
 
 def initdb(dsn):
     try:
@@ -19,14 +20,14 @@ def initdb(dsn):
         statement = """CREATE TABLE IF NOT EXISTS project (
                             id SERIAL PRIMARY KEY,
                             name VARCHAR(20),
-                            company INTEGER REFERENCES company)"""
+                            company INTEGER REFERENCES company ON DELETE CASCADE)"""
         cursor.execute(statement)
 
         statement = """CREATE TABLE IF NOT EXISTS task (
                             id SERIAL PRIMARY KEY,
                             name VARCHAR(20),
                             priority INTEGER,
-                            project INTEGER REFERENCES project)"""
+                            project INTEGER REFERENCES project ON DELETE CASCADE)"""
         cursor.execute(statement)
         statement = """CREATE TABLE IF NOT EXISTS user_role (
                     id SERIAL,
@@ -37,10 +38,42 @@ def initdb(dsn):
                     id SERIAL,
                     username VARCHAR(20),
                     password VARCHAR(100),
-                    user_type INTEGER REFERENCES user_role,
+                    user_type INTEGER REFERENCES user_role ON DELETE CASCADE,
                     PRIMARY KEY (id))"""
         cursor.execute(statement)
-
+        statement = """CREATE TABLE IF NOT EXISTS employee (
+                    id SERIAL PRIMARY KEY,
+                    name VARCHAR(20),
+                    surname VARCHAR(20),
+                    company INTEGER REFERENCES company ON DELETE CASCADE)"""
+        try:
+            cursor.execute(statement)
+        except: 
+            print("employee table cannot be created.")
+        finally:
+            connection.commit()
+        
+        statement = """CREATE TABLE IF NOT EXISTS project_of_employee (
+                    employee_id INTEGER REFERENCES employee ON DELETE CASCADE,
+                    project_id INTEGER REFERENCES project ON DELETE CASCADE,
+                    PRIMARY KEY(employee_id, project_id))"""
+        try:
+            cursor.execute(statement)
+        except: 
+            print("project_of_employee table cannot be created.")
+        finally:
+            connection.commit()
+        
+        statement = """CREATE TABLE IF NOT EXISTS task_of_employee (
+                    task_id INTEGER REFERENCES task ON DELETE CASCADE,
+                    employee_id INTEGER REFERENCES employee ON DELETE CASCADE,
+                    PRIMARY KEY(task_id, employee_id))"""
+        try:
+            cursor.execute(statement)
+        except: 
+            print("task_of_employee table cannot be created.")
+        finally:
+            connection.commit()
         connection.commit()
     except:
         print("Failed to create cursor.")
@@ -135,6 +168,22 @@ def returnCompany(company_name):
         if cursor is not None:
             cursor.close()
 
+def returnAllProjects(company_id):
+    try:
+        cursor = connection.cursor()
+        statement = """SELECT id, name FROM project
+                    WHERE %s = company"""
+        cursor.execute(statement, [company_id])
+        information = cursor.fetchall()
+        return information
+    except:
+        print("returnAllCompanies: Failed to create cursor or wrong SQL Statement")
+        connection.commit()
+        cursor = None
+    finally:
+        if cursor is not None:
+            cursor.close()
+
 def updateCompany(company_id, name, number_of_employees):
     try:
         cursor = connection.cursor()
@@ -205,11 +254,13 @@ def addTaskToDb(name, priority, project):
         if cursor is not None:
             cursor.close()
 
-def getTasksFromDb():
+def getTasksFromDb(company_number):
     try:
         cursor = connection.cursor()
-        statement = """SELECT * FROM task"""
-        cursor.execute(statement)
+        statement = """SELECT task.id, task.name, priority, task.project
+                    FROM task, project
+                    WHERE task.project = project.id AND project.company = %s"""
+        cursor.execute(statement, [company_number])
         tasks = cursor.fetchall()
         return tasks
     except:
@@ -247,3 +298,195 @@ def updateTaskInDb(id, name, priority, project):
     finally:
         if cursor is not None:
             cursor.close()
+
+def getProjectsFromDb(company_id):
+    try:
+        cursor = connection.cursor()
+    except:
+        print('getProjectsFromDb: cursor creation has failed.')
+        return
+    statement = """SELECT * FROM project
+                WHERE company = %s"""
+    try:
+        cursor.execute(statement, [company_id])
+        information = cursor.fetchall()
+    except:
+        print('getProjectsFromDb: SQL command failed.')
+    finally:
+        connection.commit()
+        cursor.close()
+    return information
+
+def deleteProjectFromDb(project_id):
+    try:
+        cursor = connection.cursor()
+    except:
+        print('deleteProjectFromDb: cursor creation has failed.')
+        return
+    statement = """DELETE FROM project
+                WHERE id = %s"""
+    try:
+        cursor.execute(statement, [project_id])
+    except:
+        print('deleteProjectFromDb: SQL command failed.')
+    finally:
+        connection.commit()
+        cursor.close()
+        
+def updateProjectInDb(name, project_id):
+    try:
+        cursor = connection.cursor()
+    except:
+        print('updateProjectInDb: cursor creation has failed.')
+        return
+    statement = """UPDATE project SET name=%s
+                   WHERE (id = %s)"""
+    try:
+        cursor.execute(statement, [name, project_id])
+    except:
+        print('updateProjectInDb: SQL command failed.')
+    finally:
+        connection.commit()
+        cursor.close()
+        
+def addProjectToDb(name, company_number):
+    try:
+        cursor = connection.cursor()
+    except:
+        print('addProjectToDp: cursor creation has failed.')
+        return
+    statement = """INSERT INTO project (name, company) VALUES (%s, %s )"""
+    try:
+        cursor.execute(statement, [name, company_number])
+    except:
+        print('addProjectToDp: SQL command failed.')
+    finally:
+        connection.commit()
+        cursor.close()
+        
+def addEmployeeToDb(name, surname, company_id):
+    try:
+        cursor = connection.cursor()
+    except:
+        print('addEmployeeToDb: cursor creation has failed.')
+        return
+    statement = """INSERT INTO employee (name, surname, company) 
+                   VALUES (%s, %s, %s )"""
+    try:
+        cursor.execute(statement, [name, surname, company_id])
+    except:
+        print('addEmployeeToDb: SQL command failed.')
+    finally:
+        connection.commit()
+        cursor.close()
+        
+def getEmployeeFromDb(company_id):
+    try:
+        cursor = connection.cursor()
+    except:
+        print('getEmployeeFromDb: cursor creation has failed.')
+        return
+    statement = """SELECT * FROM employee 
+                WHERE company = %s"""
+    try:
+        cursor.execute(statement, [company_id])
+        information = cursor.fetchall()
+    except:
+        print('getEmployeeFromDb: SQL command failed.')
+    finally:
+        connection.commit()
+        cursor.close()
+    return information
+
+def deleteEmployeeFromDb(employee_id):
+    try:
+        cursor = connection.cursor()
+    except:
+        print('deleteEmployeeFromDb: cursor creation has failed.')
+        return
+    statement = """DELETE FROM employee
+                WHERE id = %s"""
+    try:
+        cursor.execute(statement, [employee_id])
+    except:
+        print('deleteEmployeeFromDb: SQL command failed.')
+    finally:
+        connection.commit()
+        cursor.close()
+
+def updateEmployeeInDb(name, surname, employee_id):
+    try:
+        cursor = connection.cursor()
+    except:
+        print('updateEmployeeInDb: cursor creation has failed.')
+        return
+    statement = """UPDATE employee SET name=%s, surname=%s
+                   WHERE (id = %s)"""
+    try:
+        cursor.execute(statement, [name, surname, employee_id])
+    except:
+        print('updateEmployeeInDb: SQL command failed.')
+    finally:
+        connection.commit()
+        cursor.close()
+
+def returnEmployeeId(name):
+    try:
+        cursor = connection.cursor()
+    except:
+        print('returnEmployeeId: cursor creation has failed.')
+        return
+    statement = """SELECT id FROM employee
+                WHERE name = %s"""
+    try:
+        cursor.execute(statement, [name])
+        information = cursor.fetchone()
+        return information
+    except:
+        print('returnEmployeeId: SQL command failed.')
+    finally:
+        connection.commit()
+        cursor.close()
+
+def createProjectEmployeeRelation(employee_id, project):
+    try:
+        cursor = connection.cursor()
+    except:
+        print('createProjectEmployeeRelation: cursor creation has failed.')
+        return
+    statement = """INSERT INTO project_of_employee VALUES (%s, %s)"""
+    try:
+        cursor.execute(statement, [employee_id, project])
+    except:
+        print('createProjectEmployeeRelation: SQL command failed. or passed')
+    finally:
+        connection.commit()
+        cursor.close()
+        
+def returnAllTasks(name):
+    try:
+        cursor = connection.cursor()
+    except:
+        print('returnAllTasks: cursor creation has failed.')
+        return
+    statement = """SELECT DISTINCT ON (task.name) task.name, task.priority, project.name
+                   FROM task, project_of_employee, project, employee
+                   WHERE %s = employee.name AND employee.id = project_of_employee.employee_id
+                   AND project_of_employee.project_id = project.id"""
+    try:
+        print(name)
+        cursor.execute(statement, [name])
+        information = cursor.fetchall()
+        return information
+    except:
+        print('returnAllTasks: SQL command failed. or passed')
+    finally:
+        connection.commit()
+        cursor.close()
+
+
+
+
+
+
+

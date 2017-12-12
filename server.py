@@ -9,10 +9,14 @@ from flask import Flask, flash, redirect, url_for, session, Blueprint
 from flask import render_template
 from company_view import *
 from task_view import *
+from project_view import *
+from employee_view import *
 
 app = Flask(__name__)
 app.register_blueprint(company_app)
 app.register_blueprint(task_app)
+app.register_blueprint(project_app)
+app.register_blueprint(employee_app)
 app.config['SECRET_KEY'] = "verysecretkeyofthewebsite"
 
 def get_elephantsql_dsn(vcap_services):
@@ -26,41 +30,52 @@ def get_elephantsql_dsn(vcap_services):
 
 @app.route('/', methods=['GET', 'POST'])
 def login_page():
-    global logged_user_global
-    logged_user_global = None
+    session['username'] = None
     session['logged_in'] = False
+    session['user_type'] = 4
     form = LoginForm()
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
+        information = returnCompany(username)
         hash = getUserPwHash(username)
         if hash is None:
             flash('You have entered wrong username or password.')
-            return render_template('login.html', form = form, username = logged_user_global)
+            return render_template('login.html', form = form, username = session.get('username', None))
         if hash[0] == password:
             session['logged_in'] = True
             flash('You have logged in successfully.')
-            logged_user_global = username
-            print(hash[1])
+            session['username'] = username
             if hash[1] == 1:
-                return render_template('homepage_admin.html', username = logged_user_global)
+                session['user_type'] = 1
+                return render_template('homepage_admin.html', username = session.get('username', None))
             if hash[1] == 2:
-                return render_template('homepage_company.html', username = logged_user_global)
+                session['user_type'] = 2
+                session['company_number'] = information[0][0]
+                return render_template('homepage_company.html', username = session.get('username', None))
             if hash[1] == 3:
-                return render_template('homepage_employee.html', username = logged_user_global)
+                session['user_type'] = 3
+                return render_template('homepage_employee.html', username = session.get('username', None))
         else:
             flash('You have entered wrong username or password.')
-            logged_user_global = None
-    return render_template('login.html', form = form, username = logged_user_global)
+            session['username'] = None
+    return render_template('login.html', form = form, username = session.get('username', None))
 
 @app.route('/home')
 def home_page():
-    return render_template('home.html')
+    if session.get('user_type', None) == 1:
+        return render_template('homepage_admin.html', username = session.get('username', None))
+    if session.get('user_type', None) == 2:
+        return render_template('homepage_company.html', username = session.get('username', None))
+    if session.get('user_type', None) == 3:
+        return render_template('homepage_employee.html', username = session.get('username', None))
+    if session.get('user_type', None) == 4:
+        return redirect(url_for('login_page'))
     
 @app.route('/logout')
 def logout():
     session['logged_in'] = False
-    logged_user_global = None
+    session['username'] = None
     flash('You have been logged out successfully.')
     return redirect(url_for('login_page'))
     

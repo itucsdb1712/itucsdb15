@@ -14,5 +14,13 @@
     <li><a href="/listemployee">List Employee</a></li>
 {% endblock %}
 {% block body %}
-<h2>Company Page</h2>
+<h2>Add Employee</h2>
+<form method="POST">
+    {{ form.csrf_token }}
+    {{ form.name.label}} {{form.name()}} <br/>
+    {{ form.surname.label}} {{form.surname()}} <br/>
+    {{ form.project.label}} {{form.project()}} <br/>
+    {{ form.password.label}} {{form.password()}} <br/>
+    {{ form.submit() }}
+</form>
 {% endblock %}

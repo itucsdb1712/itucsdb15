@@ -18,11 +18,11 @@ def add_company():
         addCompanyToDb(company_name, number_of_employees)
         flash('Company added successfully.')
         return render_template('homepage_admin.html', form=form)
-    return render_template('addcompany.html', form=form)
+    return render_template('addcompany.html', form=form, username = session.get('username', None))
 @company_app.route('/listcompanies', methods=['GET'])
 def list_companies():
     information = listCompanies()
-    return render_template('listcompanies.html', informations = information)
+    return render_template('listcompanies.html', informations = information, username = session.get('username', None))
 @company_app.route('/selectcompany', methods=['GET', 'POST'])
 def select_company():
     form = SelectCompanyForm()
@@ -34,7 +34,7 @@ def select_company():
         if form.submitDelete.data is True:
             return redirect(url_for('company_app.delete_company'))
         return render_template('selectcompany.html', form = form)
-    return render_template('selectcompany.html', form = form)
+    return render_template('selectcompany.html', form = form, username = session.get('username', None))
 @company_app.route('/updatecompany', methods=['GET', 'POST'])
 def update_company():
     information = returnCompany(company_name_global)

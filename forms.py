@@ -23,5 +23,18 @@ class LoginForm(FlaskForm):
 class TaskForm(FlaskForm):
     name = StringField('Task name', validators=[DataRequired()])
     priority = IntegerField('priority[1-10]', validators=[DataRequired()])
-    projects = SelectField('project', choices=[], coerce=str)
+    projects = SelectField('project', coerce=int)
     submit = SubmitField('Submit')
+
+class ProjectForm(FlaskForm):
+    name = StringField('Project name', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+class EmployeeForm(FlaskForm):
+    name = StringField('Name: ', validators=[DataRequired()])
+    surname = StringField('Surname: ', validators=[DataRequired()])
+    project = SelectField('project', coerce=int)
+    password = StringField('Password: ', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+

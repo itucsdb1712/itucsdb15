@@ -8,8 +8,8 @@ task_app = Blueprint('task_app', __name__)
 @task_app.route('/addTask', methods=['GET', 'POST'])
 def add_task():
     form = TaskForm(request.form)
-    form.projects.choices = [('1', 'microsoft'), ('2', 'softtech')]
-    print(form.projects.data)
+    information = returnAllProjects(session.get('company_number', None))
+    form.projects.choices = information
     if form.validate_on_submit():
         name = form.name.data
         priority = form.priority.data
@@ -19,14 +19,15 @@ def add_task():
         form.projects.data = ''
         addTaskToDb(name, priority, project)
         flash('Task has been created')
-    return render_template('add_task.html', form=form)
+    return render_template('add_task.html', form=form, username = session.get('username', None))
 
 @task_app.route('/listTask', methods=['GET', 'POST'])
 def list_task():
     form = TaskForm(request.form)
-    form.projects.choices = [('1', 'microsoft'), ('2', 'softtech')]
-    tasks = getTasksFromDb() #returns a table
-    return render_template('list_task.html', tasks = tasks, form = form)
+    information = returnAllProjects(session.get('company_number', None))
+    form.projects.choices = information
+    tasks = getTasksFromDb(session.get('company_number', None)) #returns a table
+    return render_template('list_task.html', tasks = tasks, form = form, username = session.get('username', None))
 
 @task_app.route('/deleteTask/<task_id>', methods=['GET', 'POST'])
 def delete_task(task_id):

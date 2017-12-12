@@ -1,0 +1,36 @@
+{% extends "template.html" %}
+{% block user %}
+{% if username %}
+<li style="float: right"><a href="/logout">Logout</a></li>
+<li style="float: right">{{ username }}</li>
+{% endif %}
+{% endblock %}
+{% block topmenulist %}
+    <li><a href="/listemployeetask">List Available Tasks</a></li>
+{% endblock %}
+{% block body %}
+<h2>TASKS</h2>
+<table style="margin:0; padding:0">
+    <tr><th>Name</th><th>Priority</th><th>Project</th></tr>
+    {% if tasks %}
+    {% for task in tasks %}
+    <tr>
+        <td align="center">{{ task[0] }}</td>
+        <td align="center">{{ task[1] }}</td>
+        <td align="center">{{ task[2] }}</td>
+    </tr>
+     {% endfor %}
+    {% endif %}
+</table>
+{% endblock %}
+
+{% block script_block %}
+    function toggleUpdateForm(id) {
+    var x = document.getElementById("updateForm"+id);
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+{% endblock %}

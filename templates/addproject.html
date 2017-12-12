@@ -8,11 +8,16 @@
 {% block topmenulist %}
     <li><a href="/addTask">Add Task</a></li>
     <li><a href="/listTask">List Task</a></li>
-    <li><a href="/addproject">Add Project</a></li>
+    <li><a href="/addProject">Add Project</a></li>
     <li><a href="/listproject">List Project</a></li>
     <li><a href="/addemployee">Add Employee</a></li>
     <li><a href="/listemployee">List Employee</a></li>
 {% endblock %}
 {% block body %}
-<h2>Company Page</h2>
+<h2>Add Project</h2>
+<form method="POST">
+    {{ form.csrf_token }}
+    {{ form.name.label}} {{form.name()}} <br/>
+    {{ form.submit() }}
+</form>
 {% endblock %}
