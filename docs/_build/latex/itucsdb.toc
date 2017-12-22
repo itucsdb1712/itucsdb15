@@ -1,0 +1,13 @@
+\select@language {english}
+\contentsline {chapter}{\numberline {1}User Guide}{3}{chapter.1}
+\contentsline {section}{\numberline {1.1}Parts Implemented by Oguzhan Kocaturk}{3}{section.1.1}
+\contentsline {section}{\numberline {1.2}Parts Implemented by Muhammed Isiyok}{7}{section.1.2}
+\contentsline {chapter}{\numberline {2}Developer Guide}{9}{chapter.2}
+\contentsline {section}{\numberline {2.1}Database Design}{9}{section.2.1}
+\contentsline {subsection}{\numberline {2.1.1}Parts Implemented by Oguzhan Kocaturk}{9}{subsection.2.1.1}
+\contentsline {subsubsection}{server.py}{9}{subsubsection*.3}
+\contentsline {subsubsection}{company\_view.py}{11}{subsubsection*.4}
+\contentsline {subsubsection}{employee\_view.py}{12}{subsubsection*.5}
+\contentsline {subsubsection}{database.py}{13}{subsubsection*.6}
+\contentsline {subsubsection}{forms.py}{19}{subsubsection*.7}
+\contentsline {subsection}{\numberline {2.1.2}Parts Implemented by Muhammed Isiyok}{19}{subsection.2.1.2}

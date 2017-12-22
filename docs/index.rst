@@ -1,17 +1,17 @@
 Welcome to itucsdb's documentation!
 ===================================
 
-:Team: Team Name
+:Team: ITUCSDB 12
 
 :Members:
 
-   * Member 1
-   * Member 2
-   * Member 3
-   * Member 4
-   * Member 5
+   * Oğuzhan Kocatürk
+   * Muhammed İşiyok
 
-**project description goes here (a few paragraphs)**
+	Project development is a hard and expensive process. If a project is small and a couple of people work on it, there will be no
+	communication problem between them. But when the projects get larger and larger, communication between its members also getting hard.
+	In order to solve this communication problem and make project creation process easier we created a web application named ProjectEasy. This project aims
+	to create a great communication between project members and deal with arrangement of project tasks.
 
 Contents:
 
